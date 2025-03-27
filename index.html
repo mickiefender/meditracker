@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediRemind - Medication Reminder</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+</head>
+<body>
+  <!-- Onboarding Screen -->
+  <div id="onboarding" class="screen">
+      <div class="onboarding-container">
+          <div class="logo-container">
+              <div class="logo">
+                  <div class="logo-icon">
+                      <i class="fas fa-capsules"></i>
+                  </div>
+                  <h1>MediRemind</h1>
+              </div>
+              <p class="tagline">Your personal health companion</p>
+          </div>
+          
+          <div class="onboarding-slider">
+              <div class="slide active">
+                  <div class="slide-icon">
+                      <i class="fas fa-bell"></i>
+                  </div>
+                  <h2>Never Miss a Dose</h2>
+                  <p>Get timely reminders for all your medications</p>
+              </div>
+              <div class="slide">
+                  <div class="slide-icon">
+                      <i class="fas fa-chart-line"></i>
+                  </div>
+                  <h2>Track Your Progress</h2>
+                  <p>Monitor your medication adherence over time</p>
+              </div>
+              <div class="slide">
+                  <div class="slide-icon">
+                      <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <h2>Stay Healthy</h2>
+                  <p>Maintain your health with consistent medication routines</p>
+              </div>
+              <div class="slide-indicators">
+                  <span class="indicator active"></span>
+                  <span class="indicator"></span>
+                  <span class="indicator"></span>
+              </div>
+          </div>
+
+          <div class="onboarding-form">
+              <div class="input-group">
+                  <label for="user-name">Your Name</label>
+                  <div class="input-container">
+                      <i class="fas fa-user"></i>
+                      <input type="text" id="user-name" placeholder="Enter your name">
+                  </div>
+              </div>
+              <div class="input-group">
+                  <label for="user-age">Your Age</label>
+                  <div class="input-container">
+                      <i class="fas fa-calendar-alt"></i>
+                      <input type="number" id="user-age" placeholder="Enter your age">
+                  </div>
+              </div>
+              <button id="get-started" class="btn-primary">
+                  <span>Get Started</span>
+                  <i class="fas fa-arrow-right"></i>
+              </button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Main App Container -->
+  <div id="app" class="hidden">
+      <!-- Top Bar -->
+      <div class="top-bar">
+          <div class="user-info">
+              <div class="user-avatar" id="user-avatar">
+                  <span id="user-initial"></span>
+                  <!-- User image will be added here if available -->
+              </div>
+              <div class="user-name-container">
+                  <p id="greeting">Good morning,</p>
+                  <h3 id="display-name"></h3>
+              </div>
+          </div>
+          <div class="actions">
+              <div class="time-display">
+                  <span id="current-time">00:00</span>
+              </div>
+              <div class="notification-icon" id="notification-bell">
+                  <i class="fas fa-bell"></i>
+                  <span class="notification-badge" id="notification-count">0</span>
+              </div>
+          </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="content-area">
+          <!-- Dashboard Screen -->
+          <div id="dashboard-screen" class="app-screen active">
+              <div class="date-banner">
+                  <div class="date-info">
+                      <h2 id="current-date">Today</h2>
+                      <p id="full-date"></p>
+                  </div>
+              </div>
+
+              <div class="section">
+                  <div class="section-header">
+                      <h2>Today's Schedule</h2>
+                      <span class="badge" id="today-count">0</span>
+                  </div>
+
+                  <div class="medication-timeline" id="medication-timeline">
+                      <div class="empty-state" id="empty-timeline">
+                          <div class="empty-icon">
+                              <i class="fas fa-calendar-day"></i>
+                          </div>
+                          <h3>No medications scheduled</h3>
+                          <p>Add medications to see your daily schedule</p>
+                          <button class="btn-secondary" id="add-first-med">
+                              <i class="fas fa-plus"></i>
+                              <span>Add Medication</span>
+                          </button>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="section">
+                  <div class="section-header">
+                      <h2>Medication Overview</h2>
+                  </div>
+
+                  <div class="medication-stats">
+                      <div class="stat-card">
+                          <div class="stat-icon">
+                              <i class="fas fa-capsules"></i>
+                          </div>
+                          <div class="stat-info">
+                              <p>Active Medications</p>
+                              <h3 id="active-meds-count">0</h3>
+                          </div>
+                      </div>
+                      <div class="stat-card">
+                          <div class="stat-icon">
+                              <i class="fas fa-clock"></i>
+                          </div>
+                          <div class="stat-info">
+                              <p>Today's Doses</p>
+                              <h3 id="today-doses-count">0</h3>
+                          </div>
+                      </div>
+                      <div class="stat-card">
+                          <div class="stat-icon">
+                              <i class="fas fa-check-circle"></i>
+                          </div>
+                          <div class="stat-info">
+                              <p>Completed</p>
+                              <h3 id="completed-doses-count">0</h3>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="section" id="low-stock-section">
+                  <div class="section-header">
+                      <h2>Low Stock Alert</h2>
+                      <span class="badge warning" id="low-stock-count">0</span>
+                  </div>
+
+                  <div class="low-stock-container" id="low-stock-container">
+                      <div class="empty-state" id="empty-low-stock">
+                          <div class="empty-icon">
+                              <i class="fas fa-box-open"></i>
+                          </div>
+                          <h3>No low stock alerts</h3>
+                          <p>Your medication supplies are adequate</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Medications Screen -->
+          <div id="medications-screen" class="app-screen">
+              <div class="screen-header">
+                  <h2>My Medications</h2>
+                  <button id="add-medication-btn" class="btn-icon">
+                      <i class="fas fa-plus"></i>
+                  </button>
+              </div>
+
+              <div class="category-filter">
+                  <button class="category-btn active" data-category="all">All</button>
+                  <button class="category-btn" data-category="prescription">Prescription</button>
+                  <button class="category-btn" data-category="otc">OTC</button>
+                  <button class="category-btn" data-category="supplements">Supplements</button>
+              </div>
+
+              <div class="medications-list" id="medications-list">
+                  <div class="empty-state" id="empty-medications">
+                      <div class="empty-icon">
+                          <i class="fas fa-pills"></i>
+                      </div>
+                      <h3>No medications added</h3>
+                      <p>Add your first medication to get started</p>
+                      <button class="btn-secondary" id="add-first-med-2">
+                          <i class="fas fa-plus"></i>
+                          <span>Add Medication</span>
+                      </button>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Reminders Screen -->
+          <div id="reminders-screen" class="app-screen">
+              <div class="screen-header">
+                  <h2>My Reminders</h2>
+              </div>
+
+              <div class="reminders-list" id="reminders-list">
+                  <div class="empty-state" id="empty-reminders">
+                      <div class="empty-icon">
+                          <i class="fas fa-bell"></i>
+                      </div>
+                      <h3>No reminders set</h3>
+                      <p>Add medications with reminders to see them here</p>
+                  </div>
+              </div>
+
+              <div class="smart-reminder-section">
+                  <div class="section-header">
+                      <h2>Smart Reminders</h2>
+                      <div class="toggle-switch">
+                          <input type="checkbox" id="smart-reminder-toggle" checked>
+                          <label for="smart-reminder-toggle"></label>
+                      </div>
+                  </div>
+                  <p class="smart-reminder-info">Smart reminders adjust based on your habits and medication requirements</p>
+                  
+                  <div class="smart-options">
+                      <div class="smart-option">
+                          <input type="checkbox" id="meal-detection" checked>
+                          <label for="meal-detection">Meal Detection</label>
+                          <div class="tooltip">
+                              <i class="fas fa-info-circle"></i>
+                              <span class="tooltip-text">Reminds you to take medication with meals</span>
+                          </div>
+                      </div>
+                      <div class="smart-option">
+                          <input type="checkbox" id="sleep-aware" checked>
+                          <label for="sleep-aware">Sleep-Aware</label>
+                          <div class="tooltip">
+                              <i class="fas fa-info-circle"></i>
+                              <span class="tooltip-text">Adjusts reminders based on your sleep schedule</span>
+                          </div>
+                      </div>
+                      <div class="smart-option">
+                          <input type="checkbox" id="persistent-alerts" checked>
+                          <label for="persistent-alerts">Persistent Alerts</label>
+                          <div class="tooltip">
+                              <i class="fas fa-info-circle"></i>
+                              <span class="tooltip-text">Sends multiple reminders until you take your medication</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Settings Screen -->
+          <div id="settings-screen" class="app-screen">
+              <div class="screen-header">
+                  <h2>Settings</h2>
+              </div>
+
+              <div class="settings-list">
+                  <div class="settings-group">
+                      <h3>Account</h3>
+                      <div class="setting-item" id="profile-settings">
+                          <div class="setting-info">
+                              <i class="fas fa-user"></i>
+                              <span>Profile Information</span>
+                          </div>
+                          <i class="fas fa-chevron-right"></i>
+                      </div>
+                      <div class="setting-item" id="notification-settings">
+                          <div class="setting-info">
+                              <i class="fas fa-bell"></i>
+                              <span>Notification Preferences</span>
+                          </div>
+                          <i class="fas fa-chevron-right"></i>
+                      </div>
+                  </div>
+
+                  <div class="settings-group">
+                      <h3>App Settings</h3>
+                      <div class="setting-item">
+                          <div class="setting-info">
+                              <i class="fas fa-palette"></i>
+                              <span>Theme</span>
+                          </div>
+                          <div class="theme-selector">
+                              <span class="theme-option light active" id="light-theme"></span>
+                              <span class="theme-option dark" id="dark-theme"></span>
+                          </div>
+                      </div>
+                      <div class="setting-item">
+                          <div class="setting-info">
+                              <i class="fas fa-language"></i>
+                              <span>Language</span>
+                          </div>
+                          <select class="language-select" id="language-select">
+                              <option value="en">English</option>
+                              <option value="es">Español</option>
+                              <option value="fr">Français</option>
+                          </select>
+                      </div>
+                      <div class="setting-item">
+                          <div class="setting-info">
+                              <i class="fas fa-clock"></i>
+                              <span>Time Format</span>
+                          </div>
+                          <div class="toggle-container">
+                              <span>12h</span>
+                              <div class="toggle-switch">
+                                  <input type="checkbox" id="time-format-toggle">
+                                  <label for="time-format-toggle"></label>
+                              </div>
+                              <span>24h</span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="settings-group">
+                      <h3>Data & Privacy</h3>
+                      <div class="setting-item" id="export-data">
+                          <div class="setting-info">
+                              <i class="fas fa-database"></i>
+                              <span>Export Data</span>
+                          </div>
+                          <i class="fas fa-chevron-right"></i>
+                      </div>
+                      <div class="setting-item" id="clear-data">
+                          <div class="setting-info">
+                              <i class="fas fa-trash"></i>
+                              <span>Clear All Data</span>
+                          </div>
+                          <i class="fas fa-chevron-right"></i>
+                      </div>
+                  </div>
+
+                  <div class="settings-group">
+                      <h3>About</h3>
+                      <div class="setting-item">
+                          <div class="setting-info">
+                              <i class="fas fa-info-circle"></i>
+                              <span>App Version</span>
+                          </div>
+                          <span>1.0.0</span>
+                      </div>
+                      <div class="setting-item" id="help-support">
+                          <div class="setting-info">
+                              <i class="fas fa-question-circle"></i>
+                              <span>Help & Support</span>
+                          </div>
+                          <i class="fas fa-chevron-right"></i>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Add Medication Modal -->
+      <div id="add-medication-modal" class="modal">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Add Medication</h2>
+                  <button class="close-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <form id="add-medication-form">
+                      <div class="input-group">
+                          <label for="med-name">Medication Name</label>
+                          <div class="input-container">
+                              <i class="fas fa-prescription-bottle-alt"></i>
+                              <input type="text" id="med-name" required>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                          <label for="med-category">Category</label>
+                          <div class="input-container select-container">
+                              <i class="fas fa-tag"></i>
+                              <select id="med-category" required>
+                                  <option value="prescription">Prescription</option>
+                                  <option value="otc">Over-the-counter</option>
+                                  <option value="supplements">Supplements</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                          <label for="med-dosage">Dosage</label>
+                          <div class="input-container">
+                              <i class="fas fa-tablets"></i>
+                              <input type="text" id="med-dosage" placeholder="e.g., 10mg" required>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                          <label for="med-frequency">Frequency</label>
+                          <div class="input-container select-container">
+                              <i class="fas fa-sync"></i>
+                              <select id="med-frequency" required>
+                                  <option value="once">Once daily</option>
+                                  <option value="twice">Twice daily</option>
+                                  <option value="three">Three times daily</option>
+                                  <option value="four">Four times daily</option>
+                                  <option value="custom">Custom</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div id="custom-times" class="hidden">
+                          <div class="input-group">
+                              <label>Custom Times</label>
+                              <div class="time-inputs">
+                                  <div class="input-container">
+                                      <i class="fas fa-clock"></i>
+                                      <input type="time" class="custom-time">
+                                  </div>
+                                  class="custom-time">
+                                  </div>
+                                  <button type="button" class="add-time-btn">
+                                      <i class="fas fa-plus"></i>
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                          <label for="med-instructions">Special Instructions</label>
+                          <div class="input-container">
+                              <i class="fas fa-clipboard-list"></i>
+                              <textarea id="med-instructions" placeholder="e.g., Take with food"></textarea>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                          <label for="med-stock">Current Stock</label>
+                          <div class="input-container">
+                              <i class="fas fa-box"></i>
+                              <input type="number" id="med-stock" min="0" required>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                          <label for="med-threshold">Low Stock Threshold</label>
+                          <div class="input-container">
+                              <i class="fas fa-exclamation-triangle"></i>
+                              <input type="number" id="med-threshold" min="1" value="5" required>
+                          </div>
+                      </div>
+                      <div class="input-group toggle-group">
+                          <label for="med-reminder">Enable Reminders</label>
+                          <div class="toggle-switch">
+                              <input type="checkbox" id="med-reminder" checked>
+                              <label for="med-reminder"></label>
+                          </div>
+                      </div>
+                      <button type="submit" class="btn-primary">
+                          <span>Save Medication</span>
+                          <i class="fas fa-check"></i>
+                      </button>
+                  </form>
+              </div>
+          </div>
+      </div>
+
+      <!-- Profile Modal -->
+      <div id="profile-modal" class="modal">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Profile Information</h2>
+                  <button class="close-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <form id="profile-form">
+                      <div class="profile-picture-container">
+                          <div class="profile-picture" id="profile-picture">
+                              <span id="profile-initial"></span>
+                              <!-- Profile image will be added here if available -->
+                              <div class="profile-picture-overlay" id="profile-picture-overlay">
+                                  <i class="fas fa-camera"></i>
+                              </div>
+                          </div>
+                          <input type="file" id="profile-picture-input" class="profile-picture-input" accept="image/*">
+                      </div>
+                      <div class="input-group">
+                          <label for="profile-name">Your Name</label>
+                          <div class="input-container">
+                              <i class="fas fa-user"></i>
+                              <input type="text" id="profile-name" required>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                          <label for="profile-age">Your Age</label>
+                          <div class="input-container">
+                              <i class="fas fa-calendar-alt"></i>
+                              <input type="number" id="profile-age" required>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                          <label for="profile-email">Email (for backup)</label>
+                          <div class="input-container">
+                              <i class="fas fa-envelope"></i>
+                              <input type="email" id="profile-email" placeholder="Optional">
+                          </div>
+                      </div>
+                      <button type="submit" class="btn-primary">
+                          <span>Save Changes</span>
+                          <i class="fas fa-check"></i>
+                      </button>
+                  </form>
+              </div>
+          </div>
+      </div>
+
+      <!-- Notification Settings Modal -->
+      <div id="notification-modal" class="modal">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Notification Settings</h2>
+                  <button class="close-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <div class="notification-permission-banner" id="notification-permission-banner">
+                      <i class="fas fa-bell-slash"></i>
+                      <div class="permission-text">
+                          <h3>Notifications are disabled</h3>
+                          <p>Enable notifications to receive medication reminders</p>
+                      </div>
+                      <button class="btn-secondary" id="enable-notifications">Enable</button>
+                  </div>
+                  
+                  <div class="settings-group">
+                      <h3>Reminder Settings</h3>
+                      <div class="setting-item toggle-item">
+                          <div class="setting-info">
+                              <span>Medication Reminders</span>
+                          </div>
+                          <div class="toggle-switch">
+                              <input type="checkbox" id="med-notifications" checked>
+                              <label for="med-notifications"></label>
+                          </div>
+                      </div>
+                      <div class="setting-item toggle-item">
+                          <div class="setting-info">
+                              <span>Low Stock Alerts</span>
+                          </div>
+                          <div class="toggle-switch">
+                              <input type="checkbox" id="stock-notifications" checked>
+                              <label for="stock-notifications"></label>
+                          </div>
+                      </div>
+                      <div class="setting-item toggle-item">
+                          <div class="setting-info">
+                              <span>Refill Reminders</span>
+                          </div>
+                          <div class="toggle-switch">
+                              <input type="checkbox" id="refill-notifications" checked>
+                              <label for="refill-notifications"></label>
+                          </div>
+                      </div>
+                      <div class="setting-item toggle-item">
+                          <div class="setting-info">
+                              <span>Repeat Reminders</span>
+                          </div>
+                          <div class="toggle-switch">
+                              <input type="checkbox" id="repeat-notifications" checked>
+                              <label for="repeat-notifications"></label>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="settings-group">
+                      <h3>Notification Timing</h3>
+                      <div class="setting-item">
+                          <div class="setting-info">
+                              <span>Reminder Time</span>
+                          </div>
+                          <select id="reminder-timing">
+                              <option value="0">At scheduled time</option>
+                              <option value="5">5 minutes before</option>
+                              <option value="10">10 minutes before</option>
+                              <option value="15">15 minutes before</option>
+                              <option value="30">30 minutes before</option>
+                          </select>
+                      </div>
+                      <div class="setting-item toggle-item">
+                          <div class="setting-info">
+                              <span>Repeat Reminders</span>
+                          </div>
+                          <div class="toggle-switch">
+                              <input type="checkbox" id="repeat-notifications" checked>
+                              <label for="repeat-notifications"></label>
+                          </div>
+                      </div>
+                      <div class="setting-item" id="repeat-interval-container">
+                          <div class="setting-info">
+                              <span>Repeat Interval</span>
+                          </div>
+                          <select id="repeat-interval">
+                              <option value="5">Every 5 minutes</option>
+                              <option value="10">Every 10 minutes</option>
+                              <option value="15">Every 15 minutes</option>
+                              <option value="30">Every 30 minutes</option>
+                          </select>
+                      </div>
+                  </div>
+                  
+                  <button class="btn-primary" id="save-notification-settings">
+                      <span>Save Settings</span>
+                      <i class="fas fa-check"></i>
+                  </button>
+              </div>
+          </div>
+      </div>
+
+      <!-- Confirmation Modal -->
+      <div id="confirmation-modal" class="modal">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2 id="confirmation-title">Confirm Action</h2>
+                  <button class="close-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <p id="confirmation-message">Are you sure you want to proceed?</p>
+                  <div class="confirmation-buttons">
+                      <button class="btn-secondary" id="cancel-action">Cancel</button>
+                      <button class="btn-danger" id="confirm-action">Confirm</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Medication Detail Modal -->
+      <div id="medication-detail-modal" class="modal">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2 id="detail-med-name">Medication Name</h2>
+                  <button class="close-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <div class="med-detail-header">
+                      <div class="med-color-large" id="detail-med-color"></div>
+                      <div class="med-detail-info">
+                          <div class="med-detail-item">
+                              <span class="detail-label">Dosage:</span>
+                              <span id="detail-med-dosage">10mg</span>
+                          </div>
+                          <div class="med-detail-item">
+                              <span class="detail-label">Category:</span>
+                              <span id="detail-med-category">Prescription</span>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="med-detail-section">
+                      <h3>Schedule</h3>
+                      <div id="detail-med-schedule">
+                          <!-- Schedule items will be added dynamically -->
+                      </div>
+                  </div>
+                  
+                  <div class="med-detail-section">
+                      <h3>Instructions</h3>
+                      <p id="detail-med-instructions">Take with food</p>
+                  </div>
+                  
+                  <div class="med-detail-section">
+                      <h3>Stock Information</h3>
+                      <div class="stock-progress">
+                          <div class="progress-bar">
+                              <div class="progress-fill" id="detail-stock-fill"></div>
+                          </div>
+                          <div class="stock-numbers">
+                              <span id="detail-current-stock">15</span>
+                              <span>doses remaining</span>
+                          </div>
+                      </div>
+                      <div class="stock-actions">
+                          <button class="btn-secondary" id="update-stock">
+                              <i class="fas fa-sync-alt"></i>
+                              <span>Update Stock</span>
+                          </button>
+                          <button class="btn-primary" id="mark-refilled">
+                              <i class="fas fa-check"></i>
+                              <span>Mark as Refilled</span>
+                          </button>
+                      </div>
+                  </div>
+                  
+                  <div class="med-detail-actions">
+                      <button class="btn-secondary" id="edit-medication">
+                          <i class="fas fa-edit"></i>
+                          <span>Edit</span>
+                      </button>
+                      <button class="btn-danger" id="delete-medication">
+                          <i class="fas fa-trash"></i>
+                          <span>Delete</span>
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Take Medication Modal -->
+      <div id="take-medication-modal" class="modal">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Take Medication</h2>
+                  <button class="close-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <div class="take-med-info">
+                      <h3 id="take-med-name">Medication Name</h3>
+                      <p id="take-med-dosage">10mg</p>
+                      <p id="take-med-instructions" class="take-instructions">Take with food</p>
+                  </div>
+                  
+                  <div class="take-med-time">
+                      <div class="time-circle">
+                          <span id="take-med-time">08:00</span>
+                          <span id="take-med-period">AM</span>
+                      </div>
+                  </div>
+                  
+                  <div class="take-med-actions">
+                      <button class="btn-secondary" id="skip-dose">
+                          <i class="fas fa-times"></i>
+                          <span>Skip Dose</span>
+                      </button>
+                      <button class="btn-primary" id="confirm-take">
+                          <i class="fas fa-check"></i>
+                          <span>Taken</span>
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Help and Support Modal -->
+      <div id="help-support-modal" class="modal">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h2>Help & Support</h2>
+                  <button class="close-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                  <div class="help-content">
+                      <div class="help-section">
+                          <h3><i class="fas fa-rocket"></i> Getting Started</h3>
+                          <p>Welcome to MediTracker, your personal medication management assistant. Here's how to get started:</p>
+                          
+                          <div class="help-item">
+                              <h4>Adding Medications</h4>
+                              <p>Tap the "+" button on the Medications screen or use the "Add Medication" button on the dashboard to add your first medication.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Setting Reminders</h4>
+                              <p>When adding a medication, make sure the "Enable Reminders" toggle is on. You can choose from preset schedules or create a custom schedule by selecting specific times.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Managing Your Profile</h4>
+                              <p>Go to Settings > Profile Information to update your personal details and add a profile picture.</p>
+                          </div>
+                      </div>
+                      
+                      <div class="help-section">
+                          <h3><i class="fas fa-pills"></i> Managing Medications</h3>
+                          
+                          <div class="help-item">
+                              <h4>Viewing Medication Details</h4>
+                              <p>Tap on any medication in your list to view detailed information, including dosage, schedule, and stock levels.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Updating Stock</h4>
+                              <p>When viewing a medication's details, use the "Update Stock" button to adjust your current supply or "Mark as Refilled" when you get a new prescription.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Editing or Deleting</h4>
+                              <p>In the medication details screen, use the "Edit" or "Delete" buttons to modify or remove a medication.</p>
+                          </div>
+                      </div>
+                      
+                      <div class="help-section">
+                          <h3><i class="fas fa-bell"></i> Reminders & Notifications</h3>
+                          
+                          <div class="help-item">
+                              <h4>Taking Medications</h4>
+                              <p>When it's time to take a medication, you'll receive a notification. Tap "Taken" to mark it as completed or "Skip" if you're not taking it this time.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Smart Reminders</h4>
+                              <p>Enable Smart Reminders in the Reminders screen to get context-aware notifications that adapt to your routine.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Customizing Notifications</h4>
+                              <p>Go to Settings > Notification Preferences to customize how and when you receive reminders.</p>
+                          </div>
+                      </div>
+                      
+                      <div class="help-section">
+                          <h3><i class="fas fa-chart-line"></i> Dashboard & Tracking</h3>
+                          
+                          <div class="help-item">
+                              <h4>Today's Schedule</h4>
+                              <p>The dashboard shows all medications scheduled for today. Tap "Take" to mark a dose as taken.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Medication Overview</h4>
+                              <p>View statistics about your active medications, today's doses, and your completion rate.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Low Stock Alerts</h4>
+                              <p>The dashboard will show alerts when any medication is running low, based on the threshold you set.</p>
+                          </div>
+                      </div>
+                      
+                      <div class="help-section">
+                          <h3><i class="fas fa-cog"></i> Settings & Preferences</h3>
+                          
+                          <div class="help-item">
+                              <h4>Theme & Appearance</h4>
+                              <p>Choose between light and dark themes in the Settings screen.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Time Format</h4>
+                              <p>Switch between 12-hour and 24-hour time formats based on your preference.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Data Management</h4>
+                              <p>Use the Export Data option to back up your information or Clear All Data to start fresh.</p>
+                          </div>
+                      </div>
+                      
+                      <div class="help-section">
+                          <h3><i class="fas fa-question-circle"></i> Troubleshooting</h3>
+                          
+                          <div class="help-item">
+                              <h4>Notifications Not Working</h4>
+                              <p>Make sure notifications are enabled in both the app settings and your device settings.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>Data Not Saving</h4>
+                              <p>If your changes aren't being saved, try refreshing the app or clearing your browser cache.</p>
+                          </div>
+                          
+                          <div class="help-item">
+                              <h4>App Not Responding</h4>
+                              <p>If the app becomes unresponsive, close and reopen it. If problems persist, try clearing all data and starting fresh.</p>
+                          </div>
+                      </div>
+                      
+                      <div class="help-footer">
+                          <p>If you need additional assistance, please contact our support team:</p>
+                          <div class="help-contact">
+                              <a href="mailto:michaelcoleman106@gmail.com"><i class="fas fa-envelope"></i>michaelcoleman106@gmail.com</a><br> <br><br><hr>
+                              <a href="tel:+233208517482"><i class="fas fa-phone"></i> +233 208 517 482</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Bottom Navigation -->
+      <div class="bottom-nav">
+          <div class="nav-item active" data-screen="dashboard-screen">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+          </div>
+          <div class="nav-item" data-screen="medications-screen">
+              <i class="fas fa-pills"></i>
+              <span>Meds</span>
+          </div>
+          <div class="nav-item" data-screen="reminders-screen">
+              <i class="fas fa-bell"></i>
+              <span>Reminders</span>
+          </div>
+          <div class="nav-item" data-screen="settings-screen">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+          </div>
+      </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+      <div class="toast-icon">
+          <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="toast-message">Medication added successfully!</div>
+  </div>
+<script src="app.js"></script>
+</body>
+</html>
+
