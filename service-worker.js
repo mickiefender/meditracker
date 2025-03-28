@@ -88,17 +88,31 @@ self.addEventListener("fetch", (event) => {
           // Clone the response - one to return, one to cache
           const responseToCache = response.clone()
 
-          caches.open(CACHE_NAME).then((cache) => {
-            console.log("[Service Worker] Caching new resource: " + event.request.url)
-            cache.put(event.request, responseToCache)
-          })
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => {
+              console.log("[Service Worker] Caching new resource: " + event.request.url)
+              cache.put(event.request, responseToCache)
+            })
+            .catch((err) => {
+              console.error("[Service Worker] Error caching resource:", err)
+            })
 
           return response
         })
         .catch((error) => {
           console.log("[Service Worker] Fetch failed; returning offline page instead.", error)
-          // You could return a custom offline page here
-          return caches.match("/index.html")
+
+          // Try to return the offline page from cache
+          return caches.match("/index.html").then((response) => {
+            if (response) {
+              return response
+            }
+            // If offline page is not in cache, return a simple offline response
+            return new Response("You are offline. Please check your connection.", {
+              headers: { "Content-Type": "text/plain" },
+            })
+          })
         })
     }),
   )
